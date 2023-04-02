@@ -1,4 +1,5 @@
 import { TypeOrmModuleOptions } from "@nestjs/typeorm";
+import { User } from "src/entities/user.entity";
 
 export const getDbConnection: TypeOrmModuleOptions = {
   type: "mssql",
@@ -7,9 +8,10 @@ export const getDbConnection: TypeOrmModuleOptions = {
   username: "sa",
   password: "123",
   database: "Volunteer",
-  entities: ["dist/entities/**/*.js"],
+  entities: ["dist/src/*/*.entity.js"],
   synchronize: false,
   extra: {
     trustServerCertificate: true,
   },
+  logging: true,
 };
