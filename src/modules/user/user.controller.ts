@@ -12,6 +12,7 @@ import { UserService } from "./user.service";
 import { CreateUserDTO } from "./dto/createUser.dto";
 import { Put } from "@nestjs/common/decorators";
 import { ApiController, apiResponse } from "src/utils/helperUtils";
+import { ChangePasswordDTO } from "../auth/dto/changePassword.dto";
 
 // @Controller("user") if we use this then it will not provide different menu name in swagger also token related part
 @ApiController("user") //if we use this then it will  provide different menu name in swagger also token related part
@@ -52,6 +53,15 @@ export class UserController {
       HttpStatus.OK,
       await this.userService.delete(+id),
       "Record deleted successfully",
+    );
+  }
+
+  @Post("/changePassword")
+  async changePassword(@Body() changePasswordDTO: ChangePasswordDTO) {
+    return apiResponse(
+      HttpStatus.OK,
+      await this.userService.changePassword(changePasswordDTO),
+      "Password changed successfully.",
     );
   }
 }

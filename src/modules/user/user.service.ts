@@ -4,14 +4,22 @@ import { User } from "src/entities/user.entity";
 import { CreateUserDTO } from "./dto/createUser.dto";
 import { Repository } from "typeorm";
 import { apkError } from "src/common/globalException";
-import { notFoundException } from "src/utils/helperUtils";
+import {
+  decryptString,
+  encryptString,
+  notFoundException,
+} from "src/utils/helperUtils";
 import { LoginDTO } from "../auth/dto/login.dto";
+import * as moment from "moment";
+import { EmailService } from "../email/email.service";
+import { ChangePasswordDTO } from "../auth/dto/changePassword.dto";
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    private readonly emailService: EmailService,
   ) {}
 
   create = (createUserDto: CreateUserDTO): Promise<User> => {
@@ -101,6 +109,48 @@ export class UserService {
         HttpStatus.NOT_FOUND,
         "Entered email is not exist, please register first.",
       );
+    }
+  };
+
+  forgotPassword = async (email: string): Promise<string> => {
+    const user = await this.usersRepository.findOne({
+      where: { email: email },
+    });
+
+    if (user) {
+      const tokenLink = {
+        userEmail: user.email,
+        linkExpireDate: new Date(
+          moment(new Date()).add(30, "minute").toDate(),
+        ).toUTCString(),
+      };
+
+      return await this.emailService.sendEmail({
+        to: email,
+        subject: "Reset Password",
+        emailBody: `<h2>Click Below link to reset your password</h2><br /> <a href="${
+          "localhost:4200/reset-password?tokenLink=" +
+          encryptString(JSON.stringify(tokenLink))
+        }">Click here...</a>`,
+      });
+    } else {
+      apkError(HttpStatus.NOT_FOUND, "Entered email does not exist in db.");
+    }
+  };
+
+  changePassword = async (
+    changePasswordDTO: ChangePasswordDTO,
+  ): Promise<any> => {
+    const user = await this.usersRepository.findOne({
+      where: { email: changePasswordDTO.email },
+    });
+
+    if (user) {
+      await this.usersRepository.update(user.id, {
+        password: changePasswordDTO.password,
+      });
+    } else {
+      apkError(HttpStatus.NOT_FOUND, "Entered email does not exist in db.");
     }
   };
 }

@@ -1,20 +1,23 @@
 import { MailerService } from "@nestjs-modules/mailer";
 import { HttpStatus, Injectable } from "@nestjs/common";
-import { apkError } from "./common/globalException";
-import { SentMessageInfo } from "nodemailer";
+import { apkError } from "src/common/globalException";
+import { FROM_EMAIL_CONST } from "src/utils/constant";
 
 @Injectable()
-export class AppService {
+export class EmailService {
   constructor(private readonly mailService: MailerService) {}
-  getHello(): string {
-    return "Hello World!";
-  }
-  sendEmail = async (): Promise<string> => {
+  sendEmail = async (mailConfig: {
+    to: string;
+    subject: string;
+    emailBody: string;
+    from?: string;
+  }) => {
+    const { to, from, subject, emailBody } = mailConfig;
     const sendMailRes = await this.mailService.sendMail({
-      to: "pitrodaraj1512@gmail.com",
-      from: "tt@tt.com",
-      subject: "Testing222",
-      html: "<h1>Raj test heading</h1>",
+      to: to,
+      from: from ? from : FROM_EMAIL_CONST,
+      subject: subject,
+      html: emailBody,
     });
     if (sendMailRes?.accepted) {
       return "Please check your inbox";
