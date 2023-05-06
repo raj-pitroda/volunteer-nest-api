@@ -3,6 +3,8 @@ import { ApiTags, ApiBearerAuth } from "@nestjs/swagger";
 import { apkError } from "src/common/globalException";
 import * as CryptoAES from "crypto-js/aes";
 import * as CryptoENC from "crypto-js/enc-utf8";
+import { SetMetadata } from "@nestjs/common";
+import { IS_PUBLIC_KEY } from "./constant";
 
 export function ApiController(tagName: string) {
   return applyDecorators(
@@ -11,6 +13,8 @@ export function ApiController(tagName: string) {
     Controller(tagName),
   );
 }
+
+export const PublicDecorator = () => SetMetadata(IS_PUBLIC_KEY, true);
 
 export const apiResponse = (
   statusCode: number,
