@@ -5,6 +5,8 @@ import { AppModule } from "./app.module";
 import { HttpExceptionFilter } from "./common/globalException";
 import { AuthGuard } from "@nestjs/passport";
 import { JwtAuthGuard } from "./utils/Guards/JWTAuth.guard";
+import { RoleGuard } from "./utils/Guards/role.guard";
+import { RoleService } from "./modules/role/role.service";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -13,7 +15,7 @@ async function bootstrap() {
   app.enableCors();
 
   //Authentication
-  //There is no way to configure such behavior in a succinct way. If useGlobalGuards used, the only way to do this is to customize or extend AuthGuard. So we can't use directly app.useGlobalGuards(new AuthGuard("jwt")) but we can use @UseGuards(AuthGuard("jwt")) with controller's method.(https://stackoverflow.com/questions/49429241/nest-js-global-authguard-but-with-exceptions)
+  // app.useGlobalGuards(new (AuthGuard("jwt"))()); // we can use simple like  this as well but we need to use public method as well so we are using this below by creating custom hook
   app.useGlobalGuards(new JwtAuthGuard(new Reflector()));
 
   //Manage Swagger
@@ -30,6 +32,10 @@ async function bootstrap() {
 
   //global validator as per DTO
   app.useGlobalPipes(new ValidationPipe());
+
+  // Manage roles
+  const roleService = app.get(RoleService);
+  app.useGlobalGuards(new RoleGuard(app.get(Reflector), roleService));
 
   //Global exception
   app.useGlobalFilters(new HttpExceptionFilter());

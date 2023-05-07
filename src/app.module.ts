@@ -10,6 +10,7 @@ import { AuthModule } from "./modules/auth/auth.module";
 import { MailerModule } from "@nestjs-modules/mailer";
 import { EmailModule } from "./modules/email/email.module";
 import { ConfigModule } from "@nestjs/config";
+import { RoleModule } from "./modules/role/role.module";
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ConfigModule } from "@nestjs/config";
     CountryModule,
     AuthModule,
     EmailModule,
+    RoleModule,
   ],
   controllers: [AppController],
   providers: [AppService],

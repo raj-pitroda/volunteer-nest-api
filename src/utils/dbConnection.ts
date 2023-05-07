@@ -8,10 +8,10 @@ export const getDbConnection: TypeOrmModuleOptions = {
   username: "sa",
   password: "123",
   database: "Volunteer",
-  entities: ["dist/src/*/*.entity.js"],
+  entities: ["dist/**/*.entity.js"],
   synchronize: false,
   extra: {
     trustServerCertificate: true,
   },
-  logging: true,
+  // logging: true,
 };

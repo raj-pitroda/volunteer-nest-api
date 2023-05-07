@@ -93,7 +93,7 @@ export class UserService {
   login = async (loginDto: LoginDTO): Promise<User> => {
     const existingUser = await this.usersRepository.findOne({
       where: { email: loginDto.email },
-      loadRelationIds: true,
+      // loadRelationIds: true,
     });
     if (existingUser) {
       if (existingUser.password === loginDto.password) {
