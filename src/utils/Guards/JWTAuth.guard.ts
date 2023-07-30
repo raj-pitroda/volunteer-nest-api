@@ -32,6 +32,7 @@ export class JwtAuthGuard extends AuthGuard("jwt") {
     // }
     //above commented code is default code you can compare with https://docs.nestjs.com/recipes/passport#implementing-passport-strategies
 
+    //  In this info we get some token info like token expired, token not passed, etc..
     if (!user && info) {
       apkError(HttpStatus.UNAUTHORIZED, ["Unauthorized", info.toString()]);
     } else if (err || !user) {

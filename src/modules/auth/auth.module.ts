@@ -16,6 +16,6 @@ import { JwtStrategy } from "src/utils/Stratergy/jwt.strategry";
     }),
   ],
   controllers: [AuthController],
-  providers: [JwtStrategy],
+  providers: [JwtStrategy], // Point to Notes: For jwt mostly two strategy are user 1.local 2.JWT local is mainly need to pass    username/email and password EVERYTIME bt with jwt we can generate token and can use EVERYTIME that token, Local is mostly used for login method bt that's fine if we skip that
 })
 export class AuthModule {}
